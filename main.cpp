@@ -11,7 +11,7 @@ using namespace std;
 using namespace std::chrono;
 
 //Set up the global constants
-const int SIZE = 3;
+const int SIZE = 3, RACES = 4;
 const int ROWS = 4, COLS = 3;
 const int SIMULATIONS = 15;
 const int WIDTH = 10;
@@ -21,6 +21,7 @@ int main()
 {
     //Define 3D-Array
     int results[ROWS][COLS][SIMULATIONS];
+    int combined_results[ROWS][COLS];
 
     //Define the statistic codes
     vector<string> codes;
@@ -155,23 +156,41 @@ int main()
         }
     }
     
-    ///Print everything
+    //Set up the combined results
+    for (int x = 0; x < SIMULATIONS; x++)
+    {
+        for (int i = 0; i < RACES; i++)
+            for (int j = 0; j < SIZE; j++)
+                combined_results[i][j] += results[i][j][x];
+    }
+    //Divide them up by the amount of simulations
+    for (int i = 0; i < RACES; i++)
+        for (int j = 0; j < SIZE; j++)
+            combined_results[i][j] /= SIMULATIONS;
+
+    //Print everything
+    //Define the datatypes and structs arrays, which will be used for easier code handling
     string datatypes [] = { "Vector", "List", "Set" };
     string structs [] = { "Reading", "Sorting", "Inserting", "Deleting" };
+    //Print the number of simulations
     cout << "Number of simulations: " << SIMULATIONS << endl;
+    //Print the first row; represents operations
     cout << setw(WIDTH) << "Operation" << setw(WIDTH/2) << "|";
     for (int i = 0; i < SIZE; i++)
         cout << setw(WIDTH + 3) << datatypes[i] << setw(WIDTH/2);
     cout << endl;
+    //Big ahh line
     for (int i = 0; i < 50; i++)
         cout << "-";
     cout << endl;
+    //Print the next rows; includes the combined results
     for (int i = 0; i < 4; i++)
     {
         cout << setw(WIDTH) << structs[i] << setw(WIDTH/2) << "|";
         for (int j = 0; j < SIZE; j++)
-            cout << setw(WIDTH) << results[i][j] << " μs";
+            cout << setw(WIDTH) << combined_results[i][j] << " μs";
         cout << endl;
     }
+    //return 0, I guess
     return 0;
 }
