@@ -11,10 +11,15 @@ using namespace std;
 using namespace std::chrono;
 
 //Set up the global constants
-const int SIZE = 3, WIDTH = 10;
+const int SIZE = 3;
+const int ROWS = 4, COLS = 3;
+const int SIMULATIONS = 15;
+const int WIDTH = 10;
 
 int main()
 {
+    int results[ROWS][COLS];
+
     vector<string> codes;
     list<string> codes2;
     set<string> codes3;
@@ -22,48 +27,57 @@ int main()
     string lines;
     string race;
 
-    //Print out the Table's header
-    cout << "Race" << setw(WIDTH/2) << "|" << setw(WIDTH) << "Vector" << setw(WIDTH) << "List" << setw(WIDTH) << "Set" << endl;
-    for (int i = 0; i < 50; i++) cout << "-";
-    cout << endl;
-
     //From there, start the chrono loops.
-    for (int j = 0; j < 4; j++)
+    //Race 1: Reading
+    for (int i = 0; i < SIZE; i++)
     {
-        switch (j)
+        //Start timing
+        auto start = high_resolution_clock::now();
+        //Read the file input
+        ifstream fin("codes.txt");
+        if (fin.is_open())
         {
-            case 0: race = "Reading"; break;
-            case 1: race = "Sorting"; break;
-            case 2: race = "Inserting"; break;
-            case 3: race = "Deleting"; break;
+            switch (i)
+            {
+                case 0: while (getline(fin, lines)) codes.push_back(lines); break;
+                case 1: while (getline(fin, lines)) codes2.push_back(lines); break;
+                case 2: while (getline(fin, lines)) codes3.insert(lines); break;
+            }
+        }
+        else cout << "File not found" << endl;
+
+        //Close the file input
+        fin.close();
+
+        //End timing
+        auto end = high_resolution_clock::now();
+
+        //Compile the duration & put it to results
+        auto duration = duration_cast<microseconds>(end - start);
+        results[0][i] = duration.count();
+    }
+
+    //Race 2: Sorting
+    for (int i = 0; i < SIZE; i++)
+    {
+        //Start timing
+        auto start = high_resolution_clock::now();
+        switch (i)
+        {
+            case 0: sort(codes.begin(), codes.end()); break;
+            case 1: codes2.sort(); break;
         }
 
-        //Race 1: Reading
-        cout << setw(WIDTH/2) << race << right << setw(WIDTH/2) << "|" << right;
-        for (int i = 0; i < SIZE; i++)
-        {
-            //Start timing
-            auto start = high_resolution_clock::now();
+        //End timing
+        auto end = high_resolution_clock::now();
 
-            if (j == 0) //Race 1: Reading
-            {
-                //Read the file input
-                ifstream fin("codes.txt");
-                if (fin.is_open())
-                {
-                    while (getline(fin, lines))
-                    {
-                        if (i == 0) codes.push_back(lines);
-                        else if (i == 1) codes2.push_back(lines);
-                        else if (i == 2) codes3.insert(lines);
-                    }
-                }
-                else cout << "File not found" << endl;
+        //Compile the duration & put it to results
+        auto duration = duration_cast<microseconds>(end - start);
+        if (i != 2) results[1][i] = duration.count();
+        else results[1][i] = -1;
+    }
 
-                //Close the file input
-                fin.close();
-            }
-            else if (j == 1) //Race 2: Sorting
+        /*    else if (j == 1) //Race 2: Sorting
             {
                 if (i == 0) sort(codes.begin(), codes.end());
                 else if (i == 1) codes2.sort();
@@ -123,17 +137,17 @@ int main()
                     codes3.erase(it);
                 }
             }
-
-            //End timing
-            auto end = high_resolution_clock::now();
-
-            //Compile the duration & print it
-
-            auto duration = duration_cast<microseconds>(end - start);
-            cout << setw(WIDTH) << duration.count() << " μs";
         }
         cout << endl;
-    }
+    }*/
     
+    ///Print everything
+    string structs [] = { "Reading", "Sorting", "Inserting", "Deleting" };
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+            cout << setw(WIDTH) << results[i][j];
+        cout << endl;
+    }
     return 0;
 }
