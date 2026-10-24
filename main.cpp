@@ -106,12 +106,15 @@ int main()
                 //Depending on the i value, use the appropriate function for each data strucutre
                 case 0: codes.insert(codes.begin() + vec_mid, t); break;
                 case 1:
+                {
                     //Define it (used for the list)
                     auto it = codes2.begin();
                     //Move to list_mid
                     advance(it, list_mid);
+                    //Insert it to codes2
                     codes2.insert(it, t);
                     break;
+                }
                 case 2: codes3.insert(t); break;
             }
 
@@ -155,6 +158,7 @@ int main()
     //Set up the combined results
     for (int x = 0; x < SIMULATIONS; x++)
     {
+        //Add all of those values up by using two loops
         for (int i = 0; i < RACES; i++)
             for (int j = 0; j < SIZE; j++)
                 combined_results[i][j] += results[i][j][x];
@@ -174,15 +178,17 @@ int main()
     cout << setw(WIDTH) << "Operation" << setw(WIDTH/2) << "|";
     for (int i = 0; i < SIZE; i++)
         cout << setw(WIDTH + 3) << datatypes[i] << setw(WIDTH/2);
-    cout << endl;
+    cout << endl; //Leave space
     //Big ahh line
     for (int i = 0; i < 50; i++)
         cout << "-";
-    cout << endl;
+    cout << endl; //Leave space
     //Print the next rows; includes the combined results
     for (int i = 0; i < 4; i++)
     {
+        //Print the operation
         cout << setw(WIDTH) << structs[i] << setw(WIDTH/2) << "|";
+        //Print the microseconds
         for (int j = 0; j < SIZE; j++)
             cout << setw(WIDTH) << combined_results[i][j] << " μs";
         cout << endl;
