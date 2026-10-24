@@ -32,7 +32,7 @@ int main()
     string lines;
 
     //Define both middle values and the "TESTCODE" string (which will be used for Race 3 & 4)
-    int vec_mid, list_mid;
+    int vec_mid, list_mid, set_mid;
     string t = "TESTCODE";
 
     //From there, start the chrono loops.
@@ -69,9 +69,10 @@ int main()
             results[0][i][x] = duration.count();
         }
 
-        //Set up the vec & list sizes for later
+        //Set up the vec, list, & set sizes for later
         vec_mid = codes.size() / 2;
         list_mid = codes2.size() / 2;
+        set_mid = codes3.size() / 2;
 
         //Race 2: Sorting
         for (int i = 0; i < SIZE; i++)
@@ -105,15 +106,12 @@ int main()
                 //Depending on the i value, use the appropriate function for each data strucutre
                 case 0: codes.insert(codes.begin() + vec_mid, t); break;
                 case 1:
-                {
-                    //Define it
+                    //Define it (used for the list)
                     auto it = codes2.begin();
                     //Move to list_mid
                     advance(it, list_mid);
-                    //Then insert it
                     codes2.insert(it, t);
                     break;
-                }
                 case 2: codes3.insert(t); break;
             }
 
@@ -128,23 +126,21 @@ int main()
         //Race 4: Deleting
         for (int i = 0; i < SIZE; i++)
         {
+            //Define it & it2 (used for the list & set)
+            auto it = codes2.begin();
+            auto it2 = codes3.begin();
+            //Move to list_mid
+            advance(it, list_mid);
+            advance(it2, set_mid);
+
             //Start timing
             auto start = high_resolution_clock::now();
             switch (i)
             {
                 //Depending on the i value, use the appropriate function for each data strucutre
                 case 0: codes.erase(remove(codes.begin(), codes.end(), codes[vec_mid])); break;
-                case 1:
-                {
-                    //Define it
-                    auto it = codes2.begin();
-                    //Move to list_mid
-                    advance(it, list_mid);
-                    //Then remove the it value
-                    codes2.remove(*it);
-                    break;
-                }
-                case 2: codes3.insert(t); break;
+                case 1: codes2.remove(*it); break;
+                case 2: codes3.erase(*it2); break;
             }
 
             //End timing
