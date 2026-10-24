@@ -27,6 +27,9 @@ int main()
     string lines;
     string race;
 
+    int vec_size, list_size;
+    string t = "TESTCODE";
+
     //From there, start the chrono loops.
     //Race 1: Reading
     for (int i = 0; i < SIZE; i++)
@@ -57,6 +60,10 @@ int main()
         results[0][i] = duration.count();
     }
 
+    //Set up the vec & list sizes for later
+    vec_size = codes.size() / 2;
+    list_size = codes2.size() / 2;
+
     //Race 2: Sorting
     for (int i = 0; i < SIZE; i++)
     {
@@ -75,6 +82,58 @@ int main()
         auto duration = duration_cast<microseconds>(end - start);
         if (i != 2) results[1][i] = duration.count();
         else results[1][i] = -1;
+    }
+
+    //Race 3: Inserting
+    for (int i = 0; i < SIZE; i++)
+    {
+        //Start timing
+        auto start = high_resolution_clock::now();
+        switch (i)
+        {
+            case 0: codes.insert(codes.begin() + vec_size, t); break;
+            case 1:
+            {
+                auto it = codes2.begin();
+                advance(it, list_size);
+                codes2.insert(it, t);
+                break;
+            }
+            case 2: codes3.insert(t); break;
+        }
+
+        //End timing
+        auto end = high_resolution_clock::now();
+
+        //Compile the duration & put it to results
+        auto duration = duration_cast<microseconds>(end - start);
+        results[2][i] = duration.count();
+    }
+    
+    //Race 4: Deleting
+    for (int i = 0; i < SIZE; i++)
+    {
+        //Start timing
+        auto start = high_resolution_clock::now();
+        switch (i)
+        {
+            case 0: codes.erase(codes.begin() + vec_size); break;
+            case 1:
+            {
+                auto it = codes2.begin();
+                advance(it, list_size);
+                codes2.erase(it);
+                break;
+            }
+            case 2: codes3.insert(t); break;
+        }
+
+        //End timing
+        auto end = high_resolution_clock::now();
+
+        //Compile the duration & put it to results
+        auto duration = duration_cast<microseconds>(end - start);
+        results[3][i] = duration.count();
     }
 
         /*    else if (j == 1) //Race 2: Sorting
@@ -146,7 +205,7 @@ int main()
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < SIZE; j++)
-            cout << setw(WIDTH) << results[i][j];
+            cout << setw(WIDTH) << results[i][j] << " μs";
         cout << endl;
     }
     return 0;
